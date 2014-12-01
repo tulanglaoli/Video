@@ -29,15 +29,17 @@ namespace vlc.net
             is_playinig_ = false;
             S = new NewSocket();
             S.Init("127.0.0.1", 2000);
+            timer2.Start();
             
         }
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            if (ofd.ShowDialog() == DialogResult.OK)
+            //OpenFileDialog ofd = new OpenFileDialog();
+            //if (ofd.ShowDialog() == DialogResult.OK)
             {
-                vlc_player_.PlayFile(ofd.FileName);
+                //vlc_player_.PlayFile(ofd.FileName);
+                vlc_player_.PlayFile("A.avi");
                 trackBar1.SetRange(0, (int)vlc_player_.Duration());
                 trackBar1.Value = 0;
                 timer1.Start();
@@ -93,36 +95,37 @@ namespace vlc.net
             }
         }
 
-        void Bgw_DoWork(object o, DoWorkEventHandler e)
+
+
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
- 
+            S.SocketQuit();
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void timer2_Tick(object sender, EventArgs e)
         {
-            while (true)
-            {
-                if (S.ReturnStr().Contains("F"))
+
+
+                if (S.ReturnStr().Contains("FF"))
                 {
                     vlc_player_.PlayFile("A.avi");
                     trackBar1.SetRange(0, (int)vlc_player_.Duration());
                     trackBar1.Value = 0;
                     timer1.Start();
                     is_playinig_ = true;
+                    S.SetStrEmpty();
                 }
-                else if (S.ReturnStr().Contains("S"))
+                else if (S.ReturnStr().Contains("SS"))
                 {
                     vlc_player_.Stop();
                     trackBar1.Value = 0;
                     timer1.Stop();
                     is_playinig_ = false;
+                    S.SetStrEmpty();
                 }
-            }
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            S.SocketQuit();
+            
+            
         }
     }
 }
