@@ -31,12 +31,13 @@
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.tbVideoTime = new System.Windows.Forms.TextBox();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.btnReset = new System.Windows.Forms.Button();
             this.btnStart = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tbVideoTime = new System.Windows.Forms.TextBox();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -66,6 +67,16 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(602, 67);
             this.panel2.TabIndex = 1;
+            // 
+            // tbVideoTime
+            // 
+            this.tbVideoTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbVideoTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tbVideoTime.Location = new System.Drawing.Point(492, 3);
+            this.tbVideoTime.Name = "tbVideoTime";
+            this.tbVideoTime.ReadOnly = true;
+            this.tbVideoTime.Size = new System.Drawing.Size(108, 14);
+            this.tbVideoTime.TabIndex = 6;
             // 
             // trackBar2
             // 
@@ -114,15 +125,9 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // tbVideoTime
+            // backgroundWorker1
             // 
-            this.tbVideoTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbVideoTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbVideoTime.Location = new System.Drawing.Point(492, 3);
-            this.tbVideoTime.Name = "tbVideoTime";
-            this.tbVideoTime.ReadOnly = true;
-            this.tbVideoTime.Size = new System.Drawing.Size(108, 14);
-            this.tbVideoTime.TabIndex = 6;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
             // 
             // Form1
             // 
@@ -133,6 +138,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "libvlc.net播放器";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
@@ -151,6 +157,7 @@
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.TextBox tbVideoTime;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

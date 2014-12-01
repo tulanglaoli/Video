@@ -13,6 +13,7 @@ namespace vlc.net
     {
         private VlcPlayer vlc_player_;
         private bool is_playinig_;
+        private NewSocket S;
 
         public Form1()
         {
@@ -26,6 +27,9 @@ namespace vlc.net
             tbVideoTime.Text = "00:00:00/00:00:00";
 
             is_playinig_ = false;
+            S = new NewSocket();
+            S.Init("127.0.0.1", 2000);
+            
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -87,6 +91,38 @@ namespace vlc.net
                 vlc_player_.SetPlayTime(trackBar1.Value);
                 trackBar1.Value = (int)vlc_player_.GetPlayTime();
             }
+        }
+
+        void Bgw_DoWork(object o, DoWorkEventHandler e)
+        {
+ 
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            while (true)
+            {
+                if (S.ReturnStr().Contains("F"))
+                {
+                    vlc_player_.PlayFile("A.avi");
+                    trackBar1.SetRange(0, (int)vlc_player_.Duration());
+                    trackBar1.Value = 0;
+                    timer1.Start();
+                    is_playinig_ = true;
+                }
+                else if (S.ReturnStr().Contains("S"))
+                {
+                    vlc_player_.Stop();
+                    trackBar1.Value = 0;
+                    timer1.Stop();
+                    is_playinig_ = false;
+                }
+            }
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            S.SocketQuit();
         }
     }
 }
