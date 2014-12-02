@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using DotNet.Utilities;
 
 namespace vlc.net
 {
@@ -14,7 +15,8 @@ namespace vlc.net
         private VlcPlayer vlc_player_;
         private bool is_playinig_;
         private NewSocket S;
-
+        private string IP;
+        private int port;
         public Form1()
         {
             InitializeComponent();
@@ -27,8 +29,7 @@ namespace vlc.net
             tbVideoTime.Text = "00:00:00/00:00:00";
 
             is_playinig_ = false;
-            S = new NewSocket();
-            S.Init("127.0.0.1", 2000);
+            
             timer2.Start();
             
         }
@@ -39,7 +40,7 @@ namespace vlc.net
             //if (ofd.ShowDialog() == DialogResult.OK)
             {
                 //vlc_player_.PlayFile(ofd.FileName);
-                vlc_player_.PlayFile("A.avi");
+                vlc_player_.PlayFile(label_fileselect.Text);
                 trackBar1.SetRange(0, (int)vlc_player_.Duration());
                 trackBar1.Value = 0;
                 timer1.Start();
@@ -109,7 +110,7 @@ namespace vlc.net
 
                 if (S.ReturnStr().Contains("FF"))
                 {
-                    vlc_player_.PlayFile("A.avi");
+                    vlc_player_.PlayFile(label_fileselect.Text);
                     trackBar1.SetRange(0, (int)vlc_player_.Duration());
                     trackBar1.Value = 0;
                     timer1.Start();
@@ -126,6 +127,33 @@ namespace vlc.net
                 }
             
             
+        }
+
+        
+        private void button_fileselect_Click(object sender, EventArgs e)
+        {
+            string Pdfpath = "";
+            OpenFileDialog op = openFileDialog1;
+            op.Filter = "avi(*.avi)|*.avi|All Files(*.*)|*.*";
+            if (op.ShowDialog() == DialogResult.OK)
+            {
+                Pdfpath = op.FileName;
+                label_fileselect.Text = System.IO.Path.GetFullPath(Pdfpath);
+                //if (System.IO.File.Exists(label_checkPostion.Text) && System.IO.File.Exists(textBox_Showpath.Text))
+            }
+            else
+            {
+                label_fileselect.Text = "";
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            IP = ConfigHelper.GetConfigString("IP");
+            port = ConfigHelper.GetConfigInt("Port");
+            label_fileselect.Text = ConfigHelper.GetConfigString("file");
+            S = new NewSocket();
+            S.Init(IP, port);
         }
     }
 }
