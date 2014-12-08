@@ -34,31 +34,7 @@ namespace vlc.net
             
         }
 
-        private void btnStart_Click(object sender, EventArgs e)
-        {
-            //OpenFileDialog ofd = new OpenFileDialog();
-            //if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                //vlc_player_.PlayFile(ofd.FileName);
-                vlc_player_.PlayFile(label_fileselect.Text);
-                trackBar1.SetRange(0, (int)vlc_player_.Duration());
-                trackBar1.Value = 0;
-                timer1.Start();
-                is_playinig_ = true;
-            }
-        }
-
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            if (is_playinig_)
-            {
-                vlc_player_.Stop();
-                trackBar1.Value = 0;
-                timer1.Stop();
-                is_playinig_ = false;
-            }
-        }
-
+        #region Event
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (is_playinig_)
@@ -67,6 +43,7 @@ namespace vlc.net
                 {
                     vlc_player_.Stop();
                     timer1.Stop();
+                    tbVideoTime.Text = "00:00:00/00:00:00";
                 }
                 else
                 {
@@ -96,8 +73,15 @@ namespace vlc.net
             }
         }
 
-
-
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            IP = ConfigHelper.GetConfigString("IP");
+            port = ConfigHelper.GetConfigInt("Port");
+            label_fileselect.Text = ConfigHelper.GetConfigString("file");
+            S = new NewSocket();
+            S.Init(IP, port);
+            ShowIP_label.Text = "IP:" + IP.ToString() + "|Port:" + port;
+        }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -107,30 +91,209 @@ namespace vlc.net
         private void timer2_Tick(object sender, EventArgs e)
         {
 
-
-                if (S.ReturnStr().Contains("FF"))
-                {
-                    vlc_player_.PlayFile(label_fileselect.Text);
-                    trackBar1.SetRange(0, (int)vlc_player_.Duration());
-                    trackBar1.Value = 0;
-                    timer1.Start();
-                    is_playinig_ = true;
-                    S.SetStrEmpty();
-                }
-                else if (S.ReturnStr().Contains("SS"))
-                {
-                    vlc_player_.Stop();
-                    trackBar1.Value = 0;
-                    timer1.Stop();
-                    is_playinig_ = false;
-                    S.SetStrEmpty();
-                }
-            
-            
+            if (S.ReturnStr().Contains("FF"))
+            {
+                Play();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("SS"))
+            {
+                Stop();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("PP"))
+            {
+                pause();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("RR"))
+            {
+                Forward();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("LL"))
+            {
+                Back();
+                S.SetStrEmpty();
+            }
         }
 
-        
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            Play();
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            Stop();
+        }
+
         private void button_fileselect_Click(object sender, EventArgs e)
+        {
+            Select();
+        }
+
+        private void Forward_button_Click(object sender, EventArgs e)
+        {
+            Forward();
+        }
+
+        private void Back_button_Click(object sender, EventArgs e)
+        {
+            Back();
+        }
+
+        private void Fullscreen_button_Click(object sender, EventArgs e)
+        {
+            Fullscreen();
+        }
+
+        private void Pause_button_Click(object sender, EventArgs e)
+        {
+            pause();
+        }
+        #endregion Event
+
+     
+        //按键
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+
+            switch (keyData)
+            {
+
+                case Keys.Right:
+
+                    Forward();
+
+                    break;
+
+                case Keys.Left:
+
+                    Back();
+
+                    break;
+
+                case Keys.Escape:
+
+                     Fullscreen();
+
+                    break;
+                case Keys.Space:
+
+                     pause();
+
+                    break;
+            }
+
+            return true;//如果要调用KeyDown,这里一定要返回false才行,否则只响应重写方法里的按键.
+
+            //这里调用一下父类方向,相当于调用普通的KeyDown事件.//所以按空格会弹出两个对话框
+
+            //return base.ProcessCmdKey(ref msg, keyData);
+
+        }
+
+
+        #region 
+        void Fullscreen()
+        {
+            if (this.WindowState == FormWindowState.Maximized)//如果当前的窗体是最大化
+            {
+                vlc_player_.SetFullScreen(true); 
+                this.WindowState = FormWindowState.Normal;//把当前窗体还原默认大小
+                panel1.Size = new Size(this.Size.Width, this.Size.Height - panel2.Size.Height);
+                panel2.Visible = true;
+                this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
+            }
+            else
+            {
+                vlc_player_.SetFullScreen(false);
+                this.FormBorderStyle = FormBorderStyle.None;//将该窗体的边框设置为无,也就是没有标题栏以及窗口边框的
+                this.WindowState = FormWindowState.Maximized;//将该窗体设置为最大化
+                panel1.Size = this.Size;
+                panel2.Visible = false;
+            }
+        }
+
+        void Back()
+        {
+            if (is_playinig_)
+            {
+                vlc_player_.SetPlayTime(vlc_player_.GetPlayTime() - 10);
+                if (trackBar1.Value > 10)
+                {
+                    trackBar1.Value -= 10;
+                }
+                else
+                {
+                    trackBar1.Value = 0;
+                }
+            }
+        }
+
+        void Forward()
+        {
+            if (is_playinig_)
+            {
+                vlc_player_.SetPlayTime(vlc_player_.GetPlayTime() + 10);
+                if (trackBar1.Value > trackBar1.Maximum - 10)
+                {
+                    vlc_player_.Stop();
+                    timer1.Stop();
+                    tbVideoTime.Text = "00:00:00/00:00:00";
+                }
+                else
+                {
+                    trackBar1.Value += 10;
+                }
+            }
+        }
+
+        void pause()
+        {
+            if (is_playinig_)
+            {
+                timer1.Stop();
+                vlc_player_.SetPlayTime(vlc_player_.GetPlayTime());
+                vlc_player_.Pause();
+                is_playinig_ = false;
+            }
+            else
+            {
+                timer1.Start();
+                vlc_player_.SetPlayTime(vlc_player_.GetPlayTime());
+                vlc_player_.Pause();
+                is_playinig_ = true;
+            }
+        }
+
+        void Stop()
+        {
+            if (is_playinig_)
+            {
+                vlc_player_.Stop();
+                trackBar1.Value = 0;
+                timer1.Stop();
+                is_playinig_ = false;
+            }
+        }
+
+        void Play()
+        {
+            //OpenFileDialog ofd = new OpenFileDialog();
+            //if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                //vlc_player_.PlayFile(ofd.FileName);
+                vlc_player_.PlayFile(label_fileselect.Text);
+                trackBar1.SetRange(0, (int)vlc_player_.Duration());
+                trackBar1.Value = 0;
+                timer1.Start();
+                is_playinig_ = true;
+            }
+        }
+
+        void Select()
         {
             string Pdfpath = "";
             OpenFileDialog op = openFileDialog1;
@@ -146,14 +309,9 @@ namespace vlc.net
                 label_fileselect.Text = "";
             }
         }
+        #endregion
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            IP = ConfigHelper.GetConfigString("IP");
-            port = ConfigHelper.GetConfigInt("Port");
-            label_fileselect.Text = ConfigHelper.GetConfigString("file");
-            S = new NewSocket();
-            S.Init(IP, port);
-        }
+       
+
     }
 }

@@ -31,6 +31,13 @@
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.ShowIP_label = new System.Windows.Forms.Label();
+            this.Pause_button = new System.Windows.Forms.Button();
+            this.Fullscreen_button = new System.Windows.Forms.Button();
+            this.Back_button = new System.Windows.Forms.Button();
+            this.Forward_button = new System.Windows.Forms.Button();
+            this.label_fileselect = new System.Windows.Forms.Label();
+            this.button_fileselect = new System.Windows.Forms.Button();
             this.tbVideoTime = new System.Windows.Forms.TextBox();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
@@ -39,8 +46,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.button_fileselect = new System.Windows.Forms.Button();
-            this.label_fileselect = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -54,13 +59,18 @@
             this.panel1.BackColor = System.Drawing.Color.Black;
             this.panel1.Location = new System.Drawing.Point(0, 1);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(701, 485);
+            this.panel1.Size = new System.Drawing.Size(842, 467);
             this.panel1.TabIndex = 0;
             // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.ShowIP_label);
+            this.panel2.Controls.Add(this.Pause_button);
+            this.panel2.Controls.Add(this.Fullscreen_button);
+            this.panel2.Controls.Add(this.Back_button);
+            this.panel2.Controls.Add(this.Forward_button);
             this.panel2.Controls.Add(this.label_fileselect);
             this.panel2.Controls.Add(this.button_fileselect);
             this.panel2.Controls.Add(this.tbVideoTime);
@@ -68,16 +78,84 @@
             this.panel2.Controls.Add(this.trackBar1);
             this.panel2.Controls.Add(this.btnReset);
             this.panel2.Controls.Add(this.btnStart);
-            this.panel2.Location = new System.Drawing.Point(0, 486);
+            this.panel2.Location = new System.Drawing.Point(0, 474);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(701, 67);
+            this.panel2.Size = new System.Drawing.Size(842, 111);
             this.panel2.TabIndex = 1;
+            // 
+            // ShowIP_label
+            // 
+            this.ShowIP_label.AutoSize = true;
+            this.ShowIP_label.Location = new System.Drawing.Point(275, 68);
+            this.ShowIP_label.Name = "ShowIP_label";
+            this.ShowIP_label.Size = new System.Drawing.Size(23, 12);
+            this.ShowIP_label.TabIndex = 13;
+            this.ShowIP_label.Text = "...";
+            // 
+            // Pause_button
+            // 
+            this.Pause_button.Location = new System.Drawing.Point(209, 62);
+            this.Pause_button.Name = "Pause_button";
+            this.Pause_button.Size = new System.Drawing.Size(60, 25);
+            this.Pause_button.TabIndex = 12;
+            this.Pause_button.Text = "暂停";
+            this.Pause_button.UseVisualStyleBackColor = true;
+            this.Pause_button.Click += new System.EventHandler(this.Pause_button_Click);
+            // 
+            // Fullscreen_button
+            // 
+            this.Fullscreen_button.Location = new System.Drawing.Point(133, 62);
+            this.Fullscreen_button.Name = "Fullscreen_button";
+            this.Fullscreen_button.Size = new System.Drawing.Size(68, 25);
+            this.Fullscreen_button.TabIndex = 11;
+            this.Fullscreen_button.Text = "全屏";
+            this.Fullscreen_button.UseVisualStyleBackColor = true;
+            this.Fullscreen_button.Click += new System.EventHandler(this.Fullscreen_button_Click);
+            // 
+            // Back_button
+            // 
+            this.Back_button.Location = new System.Drawing.Point(70, 62);
+            this.Back_button.Name = "Back_button";
+            this.Back_button.Size = new System.Drawing.Size(57, 25);
+            this.Back_button.TabIndex = 10;
+            this.Back_button.Text = "后退";
+            this.Back_button.UseVisualStyleBackColor = true;
+            this.Back_button.Click += new System.EventHandler(this.Back_button_Click);
+            // 
+            // Forward_button
+            // 
+            this.Forward_button.Location = new System.Drawing.Point(8, 62);
+            this.Forward_button.Name = "Forward_button";
+            this.Forward_button.Size = new System.Drawing.Size(56, 25);
+            this.Forward_button.TabIndex = 9;
+            this.Forward_button.Text = "快进";
+            this.Forward_button.UseVisualStyleBackColor = true;
+            this.Forward_button.Click += new System.EventHandler(this.Forward_button_Click);
+            // 
+            // label_fileselect
+            // 
+            this.label_fileselect.AutoSize = true;
+            this.label_fileselect.Location = new System.Drawing.Point(207, 35);
+            this.label_fileselect.Name = "label_fileselect";
+            this.label_fileselect.Size = new System.Drawing.Size(23, 12);
+            this.label_fileselect.TabIndex = 8;
+            this.label_fileselect.Text = "...";
+            // 
+            // button_fileselect
+            // 
+            this.button_fileselect.Location = new System.Drawing.Point(133, 27);
+            this.button_fileselect.Name = "button_fileselect";
+            this.button_fileselect.Size = new System.Drawing.Size(68, 29);
+            this.button_fileselect.TabIndex = 7;
+            this.button_fileselect.Text = "选择文件";
+            this.button_fileselect.UseVisualStyleBackColor = true;
+            this.button_fileselect.Click += new System.EventHandler(this.button_fileselect_Click);
             // 
             // tbVideoTime
             // 
             this.tbVideoTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.tbVideoTime.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.tbVideoTime.Location = new System.Drawing.Point(591, 3);
+            this.tbVideoTime.Location = new System.Drawing.Point(732, 3);
             this.tbVideoTime.Name = "tbVideoTime";
             this.tbVideoTime.ReadOnly = true;
             this.tbVideoTime.Size = new System.Drawing.Size(108, 14);
@@ -87,7 +165,7 @@
             // 
             this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar2.AutoSize = false;
-            this.trackBar2.Location = new System.Drawing.Point(589, 31);
+            this.trackBar2.Location = new System.Drawing.Point(730, 31);
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(109, 28);
             this.trackBar2.TabIndex = 4;
@@ -100,7 +178,7 @@
             this.trackBar1.AutoSize = false;
             this.trackBar1.Location = new System.Drawing.Point(0, 0);
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(585, 25);
+            this.trackBar1.Size = new System.Drawing.Size(726, 25);
             this.trackBar1.TabIndex = 3;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
@@ -138,34 +216,16 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // button_fileselect
-            // 
-            this.button_fileselect.Location = new System.Drawing.Point(133, 27);
-            this.button_fileselect.Name = "button_fileselect";
-            this.button_fileselect.Size = new System.Drawing.Size(68, 29);
-            this.button_fileselect.TabIndex = 7;
-            this.button_fileselect.Text = "选择文件";
-            this.button_fileselect.UseVisualStyleBackColor = true;
-            this.button_fileselect.Click += new System.EventHandler(this.button_fileselect_Click);
-            // 
-            // label_fileselect
-            // 
-            this.label_fileselect.AutoSize = true;
-            this.label_fileselect.Location = new System.Drawing.Point(207, 35);
-            this.label_fileselect.Name = "label_fileselect";
-            this.label_fileselect.Size = new System.Drawing.Size(23, 12);
-            this.label_fileselect.TabIndex = 8;
-            this.label_fileselect.Text = "...";
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(702, 553);
+            this.ClientSize = new System.Drawing.Size(843, 585);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "libvlc.net播放器";
+            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel2.ResumeLayout(false);
@@ -190,6 +250,11 @@
         private System.Windows.Forms.Label label_fileselect;
         private System.Windows.Forms.Button button_fileselect;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button Back_button;
+        private System.Windows.Forms.Button Forward_button;
+        private System.Windows.Forms.Button Fullscreen_button;
+        private System.Windows.Forms.Button Pause_button;
+        private System.Windows.Forms.Label ShowIP_label;
     }
 }
 

@@ -96,7 +96,12 @@ public class NewSocket{
         }
         //等待连接
         //当有可用的客户端连接尝试时执行，并返回一个新的socket,用于与客户端之间的通信
-        clientSocket = severSocket.Accept();
+        try
+        {
+            clientSocket = severSocket.Accept();
+        }
+        catch
+        { }
 	
     }
 
