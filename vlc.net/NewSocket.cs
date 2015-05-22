@@ -29,12 +29,8 @@ public class NewSocket{
         returnStr = "";
         receiveStr = "";
 
-        //获取IP
-        string hostName = System.Net.Dns.GetHostName();
-        System.Net.IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(hostName);
+       
 
-        //ip地址列表
-        System.Net.IPAddress[] addr = ipEntry.AddressList;
 
         //建立服务器端socket
         IPEndPoint ipep = new IPEndPoint(/*addr[0]*/IPAddress.Parse(IP), port);//本机预使用的IP和端口

@@ -54,6 +54,10 @@ public class SendClientSocket : MonoBehaviour {
 		{
 			Send("LL");
 		}
+		if(GUI.Button (new Rect (0, 200, 100, 100), "FullScreen"))
+		{
+			Send("CC");
+		}
 		if(GUI.Button (new Rect (100, 200, 100, 100), "Config And Save"))
 		{
 			if (ISConfig==false)
@@ -75,15 +79,14 @@ public class SendClientSocket : MonoBehaviour {
 			Port = int.Parse(GUI.TextArea(new Rect (200, 350, 100, 20), Port.ToString()));
 		}
 
-
 	}
 	
 	int bytes;
 	void Client(string IP,int port)
 	{
-		string hostName = System.Net.Dns.GetHostName();
-		System.Net.IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(hostName);
-		System.Net.IPAddress[] addr = ipEntry.AddressList;
+		//string hostName = System.Net.Dns.GetHostName();
+		//System.Net.IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(hostName);
+		//System.Net.IPAddress[] addr = ipEntry.AddressList;
 		System.Net.IPAddress readIP = IPAddress.Parse(IP);
 		IPEndPoint ipep = new IPEndPoint(readIP, port);
 		Sharedcode.c = new Socket(AddressFamily.InterNetwork,SocketType.Stream,ProtocolType.Tcp);

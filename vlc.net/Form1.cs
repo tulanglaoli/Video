@@ -116,6 +116,11 @@ namespace vlc.net
                 Back();
                 S.SetStrEmpty();
             }
+            else if (S.ReturnStr().Contains("CC"))
+            {
+                Fullscreen();
+                S.SetStrEmpty();
+            }
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -198,7 +203,7 @@ namespace vlc.net
         #region 
         void Fullscreen()
         {
-            if (this.WindowState == FormWindowState.Maximized)//如果当前的窗体是最大化
+            if (!panel2.Visible)//如果当前的窗体是最大化
             {
                 vlc_player_.SetFullScreen(true); 
                 this.WindowState = FormWindowState.Normal;//把当前窗体还原默认大小
@@ -210,7 +215,13 @@ namespace vlc.net
             {
                 vlc_player_.SetFullScreen(false);
                 this.FormBorderStyle = FormBorderStyle.None;//将该窗体的边框设置为无,也就是没有标题栏以及窗口边框的
-                this.WindowState = FormWindowState.Maximized;//将该窗体设置为最大化
+                //this.WindowState = FormWindowState.Maximized;//将该窗体设置为最大化(方法1，适用于单一屏幕)
+
+                Rectangle rect = new Rectangle();rect = Screen.GetWorkingArea(this);//获取屏幕大小
+                this.Width = rect.Width;
+                this.Height = rect.Width;
+  
+                this.Location = new Point(0, 0);
                 panel1.Size = this.Size;
                 panel2.Visible = false;
             }

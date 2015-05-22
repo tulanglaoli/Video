@@ -165,7 +165,7 @@
             // 
             this.trackBar2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar2.AutoSize = false;
-            this.trackBar2.Location = new System.Drawing.Point(730, 31);
+            this.trackBar2.Location = new System.Drawing.Point(730, 35);
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(109, 28);
             this.trackBar2.TabIndex = 4;
