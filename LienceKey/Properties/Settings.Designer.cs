@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Keybutton.Properties
+namespace LienceKey.Properties
 {
 
 
