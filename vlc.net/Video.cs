@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using DotNet.Utilities;
+using System.Threading;
+using System.Drawing;
 
 namespace vlc.net
 {
@@ -17,6 +19,11 @@ namespace vlc.net
         private NewSocket S;
         private string IP;
         private int port;
+        static AsyncUdpClient AUC;
+        static Thread t;
+        Dictionary<int,Image> lImg;
+        decimal starttime;
+        decimal stoptime;
         public Form1()
         {
             InitializeComponent();
@@ -29,9 +36,10 @@ namespace vlc.net
             tbVideoTime.Text = "00:00:00/00:00:00";
 
             is_playinig_ = false;
-            
-            timer2.Start();
-            
+
+            lImg = new Dictionary<int,System.Drawing.Image>();
+            starttime = ConfigHelper.GetConfigDecimal("starttime");
+            stoptime = ConfigHelper.GetConfigDecimal("stoptime");
         }
 
         #region Event
@@ -43,7 +51,7 @@ namespace vlc.net
                 {
                     vlc_player_.Stop();
                     timer1.Stop();
-                    tbVideoTime.Text = "00:00:00/00:00:00";
+                    //tbVideoTime.Text = "00:00:00/00:00:00";
                 }
                 else
                 {
@@ -75,57 +83,76 @@ namespace vlc.net
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            picBox.Size = panel1.Size;
             IP = ConfigHelper.GetConfigString("IP");
             port = ConfigHelper.GetConfigInt("Port");
-            label_fileselect.Text = ConfigHelper.GetConfigString("file");
-            S = new NewSocket();
-            S.Init(IP, port);
+
+            string[] paths = ConfigHelper.GetConfigString("file").Split(new char[1] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string path in paths)
+            {
+                if (!string.IsNullOrEmpty(path))
+                {
+                    comboBox_fileselect.Items.Add(path);
+                    comboBox_fileselect.SelectedItem = path;
+                    if (System.IO.Path.GetExtension(path) == ".png" || System.IO.Path.GetExtension(path) == ".jpg")
+                    {
+                        lImg.Add(comboBox_fileselect.Items.Count - 1, Image.FromFile(path));
+                    }
+                }
+            }
+            
+            //TCP连接
+            //S = new NewSocket();
+            //S.Init(IP, port);
+            //timer2.Start();
+            //UDP
+            AUC = new AsyncUdpClient(IP, port, 10010);
+            t = new Thread(DUPSocket);
+            t.Start();
+            timer3.Start();
+
             ShowIP_label.Text = "IP:" + IP.ToString() + "|Port:" + port;
+        }
+
+        static void DUPSocket()
+        {
+            while (t.IsAlive)
+            {
+                AUC.ReceiveMessages();
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            S.SocketQuit();
+            try
+            {
+                
+                if (t.IsAlive)
+                {
+                    
+                    t.Abort();
+                    t = null;
+                }
+                
+                    
+         
+            }
+            catch
+            { 
+
+            }
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
-        {
-
-            if (S.ReturnStr().Contains("FF"))
-            {
-                Play();
-                S.SetStrEmpty();
-            }
-            else if (S.ReturnStr().Contains("SS"))
-            {
-                Stop();
-                S.SetStrEmpty();
-            }
-            else if (S.ReturnStr().Contains("PP"))
-            {
-                pause();
-                S.SetStrEmpty();
-            }
-            else if (S.ReturnStr().Contains("RR"))
-            {
-                Forward();
-                S.SetStrEmpty();
-            }
-            else if (S.ReturnStr().Contains("LL"))
-            {
-                Back();
-                S.SetStrEmpty();
-            }
-            else if (S.ReturnStr().Contains("CC"))
-            {
-                Fullscreen();
-                S.SetStrEmpty();
-            }
-        }
+        
 
         private void btnStart_Click(object sender, EventArgs e)
         {
-            Play();
+            if (System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".png" && System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".jpg")
+            {
+                Play(comboBox_fileselect.SelectedItem.ToString());
+                picBox.Visible = false;
+                panel1.Visible = true;
+            }
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -156,6 +183,16 @@ namespace vlc.net
         private void Pause_button_Click(object sender, EventArgs e)
         {
             pause();
+        }
+
+        private void BtnImg_Click(object sender, EventArgs e)
+        {
+            if (lImg.ContainsKey(comboBox_fileselect.SelectedIndex))
+            {
+                picBox.Image = lImg[comboBox_fileselect.SelectedIndex];
+                picBox.Visible = true;
+                panel1.Visible = false;
+            }
         }
         #endregion Event
 
@@ -208,6 +245,7 @@ namespace vlc.net
                 vlc_player_.SetFullScreen(true); 
                 this.WindowState = FormWindowState.Normal;//把当前窗体还原默认大小
                 panel1.Size = new Size(this.Size.Width, this.Size.Height - panel2.Size.Height);
+                picBox.Size = panel1.Size;
                 panel2.Visible = true;
                 this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             }
@@ -223,6 +261,7 @@ namespace vlc.net
   
                 this.Location = new Point(0, 0);
                 panel1.Size = this.Size;
+                picBox.Size = panel1.Size;
                 panel2.Visible = false;
             }
         }
@@ -252,7 +291,7 @@ namespace vlc.net
                 {
                     vlc_player_.Stop();
                     timer1.Stop();
-                    tbVideoTime.Text = "00:00:00/00:00:00";
+                    //tbVideoTime.Text = "00:00:00/00:00:00";
                 }
                 else
                 {
@@ -285,22 +324,43 @@ namespace vlc.net
             {
                 vlc_player_.Stop();
                 trackBar1.Value = 0;
+                tbVideoTime.Text = string.Format("{0}/{1}",
+                        GetTimeString(trackBar1.Value),
+                        GetTimeString(trackBar1.Maximum));
                 timer1.Stop();
                 is_playinig_ = false;
             }
         }
 
-        void Play()
+        void Play(string path)
         {
             //OpenFileDialog ofd = new OpenFileDialog();
             //if (ofd.ShowDialog() == DialogResult.OK)
             {
-                //vlc_player_.PlayFile(ofd.FileName);
-                vlc_player_.PlayFile(label_fileselect.Text);
-                trackBar1.SetRange(0, (int)vlc_player_.Duration());
-                trackBar1.Value = 0;
-                timer1.Start();
-                is_playinig_ = true;
+                //vlc_player_.PlayFile(ofd.FileName);comboBox_fileselect.SelectedItem.ToString()
+                                {
+                    vlc_player_.PlayFile(path);
+                    trackBar1.SetRange(0, (int)vlc_player_.Duration());
+                    trackBar1.Value = 0;
+                    timer1.Start();
+                    is_playinig_ = true;
+                }
+            }
+        }
+
+        void PlayInit(string path)
+        {
+            //OpenFileDialog ofd = new OpenFileDialog();
+            //if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                //vlc_player_.PlayFile(ofd.FileName);comboBox_fileselect.SelectedItem.ToString()
+                {
+                    vlc_player_.PlayInit(path);
+                    trackBar1.SetRange(0, (int)vlc_player_.Duration());
+                    trackBar1.Value = 0;
+                    //timer1.Start();
+                    //is_playinig_ = true;
+                }
             }
         }
 
@@ -312,15 +372,194 @@ namespace vlc.net
             if (op.ShowDialog() == DialogResult.OK)
             {
                 Pdfpath = op.FileName;
-                label_fileselect.Text = System.IO.Path.GetFullPath(Pdfpath);
+                comboBox_fileselect.Items.Add(System.IO.Path.GetFullPath(Pdfpath));
+                comboBox_fileselect.SelectedItem = System.IO.Path.GetFullPath(Pdfpath);
+                if (System.IO.Path.GetExtension(Pdfpath) == ".png" || System.IO.Path.GetExtension(Pdfpath) == ".jpg")
+                {
+                    lImg.Add(comboBox_fileselect.Items.Count - 1, Image.FromFile(System.IO.Path.GetFullPath(Pdfpath)));
+                }
                 //if (System.IO.File.Exists(label_checkPostion.Text) && System.IO.File.Exists(textBox_Showpath.Text))
             }
             else
             {
-                label_fileselect.Text = "";
+                
+            }
+        }
+
+        void ExchangImgtoVid()
+        {
+            if (panel1.Visible)
+            {
+                picBox.Visible = true;
+                panel1.Visible = false;
+            }
+            else
+            {
+                picBox.Visible = false;
+                panel1.Visible = true;
             }
         }
         #endregion
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            lock (this)
+            {
+                if (AUC.receiveString.Contains("FF"))
+                {
+                    if (System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".png" && System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".jpg")
+                    {
+                        Play(comboBox_fileselect.SelectedItem.ToString());
+                        picBox.Visible = false;
+                        panel1.Visible = true;
+                    }
+                }
+                else if (AUC.receiveString.Contains("SS"))
+                {
+                    Stop();
+
+                }
+                else if (AUC.receiveString.Contains("PP"))
+                {
+                    pause();
+
+                }
+                else if (AUC.receiveString.Contains("RR"))
+                {
+                    Forward();
+
+                }
+                else if (AUC.receiveString.Contains("LL"))
+                {
+                    Back();
+
+                }
+                else if (AUC.receiveString.Contains("CC"))
+                {
+                    Fullscreen();
+
+                }
+                else if (AUC.receiveString.Contains("PDA,100#"))
+                {
+                    timer4.Start();
+                    state = 0;
+                    a = 0;
+                }
+                else if (AUC.receiveString.Contains("PDA,101#"))
+                {
+                    pause();
+                    if (timer4.Enabled)
+                        timer4.Stop();
+                    else
+                        timer4.Start();
+                }
+                else if (AUC.receiveString.Contains("PDA,102#"))
+                {
+                    timer4.Stop();
+                    Stop();
+                    state = 0;
+                    a = 0;
+                    picBox.Image = lImg[0];
+                    picBox.Visible = true;
+                    panel1.Visible = false;
+                }
+                AUC.receiveString = "";
+            }
+        }
+
+
+        //tcp通信
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+
+            if (S.ReturnStr().Contains("FF"))
+            {
+                if (System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".png" && System.IO.Path.GetExtension(comboBox_fileselect.SelectedItem.ToString()) != ".jpg")
+                {
+                    Play(comboBox_fileselect.SelectedItem.ToString());
+                    picBox.Visible = false;
+                    panel1.Visible = true;
+                }
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("SS"))
+            {
+                Stop();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("PP"))
+            {
+                pause();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("RR"))
+            {
+                Forward();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("LL"))
+            {
+                Back();
+                S.SetStrEmpty();
+            }
+            else if (S.ReturnStr().Contains("CC"))
+            {
+                Fullscreen();
+                S.SetStrEmpty();
+            }
+        }
+
+
+        int state = 0;
+        double a = 0;
+        private void timer4_Tick(object sender, EventArgs e)
+        {
+            a += timer4.Interval / 1000.0;
+            switch (state)
+            {
+                case 0:
+                    picBox.Image = lImg[0];
+                    picBox.Visible = true;
+                    panel1.Visible = false;
+                    PlayInit(comboBox_fileselect.Items[1].ToString());
+                    state = 1;
+                    break;
+                case 1:
+                    if (a > Convert.ToDouble(starttime))
+                    {
+                        a = 0;
+                        state = 2;
+                        vlc_player_.play();
+                        timer1.Start();
+                        is_playinig_ = true;
+                        picBox.Visible = false ;
+                        panel1.Visible = true;
+                        picBox.Image = lImg[2];
+                    }
+                    break;
+                case 2:
+                    if (trackBar1.Value >= trackBar1.Maximum)
+                    {
+                        Stop();
+                        picBox.Visible = true;
+                        panel1.Visible = false;
+                        a = 0;
+                        state = 3;
+                    }
+                    break;
+                case 3:
+                    if (a > Convert.ToDouble(stoptime))
+                    {
+                        timer4.Stop();
+                        state = 0;
+                        a = 0;
+                        picBox.Image = lImg[0];
+                        picBox.Visible = true;
+                        panel1.Visible = false;
+                    }
+                    break;
+            }
+        }
 
        
 

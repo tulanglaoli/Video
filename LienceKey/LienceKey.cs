@@ -7,14 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DotNet.Utilities;
 
 namespace LienceKey
 {
     public partial class LienceKey : Form
     {
+        SoftReg SR;
         public LienceKey()
         {
             InitializeComponent();
+            SR = new SoftReg();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = SR.getRNum();
         }
     }
 }

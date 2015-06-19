@@ -31,12 +31,12 @@
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox_fileselect = new System.Windows.Forms.ComboBox();
             this.ShowIP_label = new System.Windows.Forms.Label();
             this.Pause_button = new System.Windows.Forms.Button();
             this.Fullscreen_button = new System.Windows.Forms.Button();
             this.Back_button = new System.Windows.Forms.Button();
             this.Forward_button = new System.Windows.Forms.Button();
-            this.label_fileselect = new System.Windows.Forms.Label();
             this.button_fileselect = new System.Windows.Forms.Button();
             this.tbVideoTime = new System.Windows.Forms.TextBox();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
@@ -46,9 +46,14 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.timer3 = new System.Windows.Forms.Timer(this.components);
+            this.picBox = new System.Windows.Forms.PictureBox();
+            this.BtnImg = new System.Windows.Forms.Button();
+            this.timer4 = new System.Windows.Forms.Timer(this.components);
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -66,12 +71,13 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.BtnImg);
+            this.panel2.Controls.Add(this.comboBox_fileselect);
             this.panel2.Controls.Add(this.ShowIP_label);
             this.panel2.Controls.Add(this.Pause_button);
             this.panel2.Controls.Add(this.Fullscreen_button);
             this.panel2.Controls.Add(this.Back_button);
             this.panel2.Controls.Add(this.Forward_button);
-            this.panel2.Controls.Add(this.label_fileselect);
             this.panel2.Controls.Add(this.button_fileselect);
             this.panel2.Controls.Add(this.tbVideoTime);
             this.panel2.Controls.Add(this.trackBar2);
@@ -82,6 +88,14 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(842, 111);
             this.panel2.TabIndex = 1;
+            // 
+            // comboBox_fileselect
+            // 
+            this.comboBox_fileselect.FormattingEnabled = true;
+            this.comboBox_fileselect.Location = new System.Drawing.Point(277, 32);
+            this.comboBox_fileselect.Name = "comboBox_fileselect";
+            this.comboBox_fileselect.Size = new System.Drawing.Size(295, 20);
+            this.comboBox_fileselect.TabIndex = 14;
             // 
             // ShowIP_label
             // 
@@ -132,18 +146,9 @@
             this.Forward_button.UseVisualStyleBackColor = true;
             this.Forward_button.Click += new System.EventHandler(this.Forward_button_Click);
             // 
-            // label_fileselect
-            // 
-            this.label_fileselect.AutoSize = true;
-            this.label_fileselect.Location = new System.Drawing.Point(207, 35);
-            this.label_fileselect.Name = "label_fileselect";
-            this.label_fileselect.Size = new System.Drawing.Size(23, 12);
-            this.label_fileselect.TabIndex = 8;
-            this.label_fileselect.Text = "...";
-            // 
             // button_fileselect
             // 
-            this.button_fileselect.Location = new System.Drawing.Point(133, 27);
+            this.button_fileselect.Location = new System.Drawing.Point(201, 27);
             this.button_fileselect.Name = "button_fileselect";
             this.button_fileselect.Size = new System.Drawing.Size(68, 29);
             this.button_fileselect.TabIndex = 7;
@@ -185,7 +190,7 @@
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(70, 27);
+            this.btnReset.Location = new System.Drawing.Point(138, 27);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(57, 29);
             this.btnReset.TabIndex = 2;
@@ -216,11 +221,40 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // timer3
+            // 
+            this.timer3.Interval = 50;
+            this.timer3.Tick += new System.EventHandler(this.timer3_Tick);
+            // 
+            // picBox
+            // 
+            this.picBox.Location = new System.Drawing.Point(0, 0);
+            this.picBox.Name = "picBox";
+            this.picBox.Size = new System.Drawing.Size(100, 50);
+            this.picBox.TabIndex = 2;
+            this.picBox.TabStop = false;
+            this.picBox.Visible = false;
+            // 
+            // BtnImg
+            // 
+            this.BtnImg.Location = new System.Drawing.Point(70, 27);
+            this.BtnImg.Name = "BtnImg";
+            this.BtnImg.Size = new System.Drawing.Size(57, 29);
+            this.BtnImg.TabIndex = 15;
+            this.BtnImg.Text = "图片";
+            this.BtnImg.UseVisualStyleBackColor = true;
+            this.BtnImg.Click += new System.EventHandler(this.BtnImg_Click);
+            // 
+            // timer4
+            // 
+            this.timer4.Tick += new System.EventHandler(this.timer4_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(843, 585);
+            this.Controls.Add(this.picBox);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Name = "Form1";
@@ -232,6 +266,7 @@
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -247,7 +282,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.TextBox tbVideoTime;
         private System.Windows.Forms.Timer timer2;
-        private System.Windows.Forms.Label label_fileselect;
         private System.Windows.Forms.Button button_fileselect;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Button Back_button;
@@ -255,6 +289,11 @@
         private System.Windows.Forms.Button Fullscreen_button;
         private System.Windows.Forms.Button Pause_button;
         private System.Windows.Forms.Label ShowIP_label;
+        private System.Windows.Forms.Timer timer3;
+        private System.Windows.Forms.PictureBox picBox;
+        private System.Windows.Forms.ComboBox comboBox_fileselect;
+        private System.Windows.Forms.Button BtnImg;
+        private System.Windows.Forms.Timer timer4;
     }
 }
 

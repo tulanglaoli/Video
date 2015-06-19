@@ -1,9 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vlc.net", "vlc.net\vlc.net.csproj", "{8CD8039C-AA33-4C8D-8F77-4E0297BAE990}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Video", "vlc.net\Video.csproj", "{8CD8039C-AA33-4C8D-8F77-4E0297BAE990}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLibrary", "BaseLibrary\BaseLibrary.csproj", "{0FF41BAB-7C45-45AB-96B0-B7E2124E102F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LienceKey", "LienceKey\LienceKey.csproj", "{13FE9E56-6654-4406-A460-751F59A76905}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +39,16 @@ Global
 		{0FF41BAB-7C45-45AB-96B0-B7E2124E102F}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0FF41BAB-7C45-45AB-96B0-B7E2124E102F}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0FF41BAB-7C45-45AB-96B0-B7E2124E102F}.Release|x86.ActiveCfg = Release|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{13FE9E56-6654-4406-A460-751F59A76905}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

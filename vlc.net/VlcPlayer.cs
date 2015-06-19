@@ -46,6 +46,26 @@ namespace vlc.net
             }
         }
 
+        public void PlayInit(string filePath)
+        {
+            IntPtr libvlc_media = LibVlcAPI.libvlc_media_new_path(libvlc_instance_, filePath);
+            if (libvlc_media != IntPtr.Zero)
+            {
+                LibVlcAPI.libvlc_media_parse(libvlc_media);
+                duration_ = LibVlcAPI.libvlc_media_get_duration(libvlc_media) / 1000.0;
+
+                LibVlcAPI.libvlc_media_player_set_media(libvlc_media_player_, libvlc_media);
+                LibVlcAPI.libvlc_media_release(libvlc_media);
+
+                
+            }
+        }
+
+        public void play()
+        {
+            LibVlcAPI.libvlc_media_player_play(libvlc_media_player_);
+        }
+
         public void Pause()
         {
             if (libvlc_media_player_ != IntPtr.Zero)
